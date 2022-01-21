@@ -1,25 +1,34 @@
-import logo from './logo.svg';
 import './App.css';
+import { SearchBar } from './components/searchbar';
+import { useState } from 'react';
+import unsplash from './api/unsplash.js'
+import { ImageList } from './components/ImageList';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+	const [images, setImages] = useState({ img: [] })
+
+	const searchKeyWords = async (keyWord) => {
+
+		const response = await unsplash.get('/search/photos', {
+			params: { query: keyWord },
+		});
+
+		const newImages = { img: response.data.results }
+
+		setImages(newImages)
+	}
+
+
+
+	return (
+		<div className="App">
+			<h1 className="heading">Search for images <i className="far fa-images"></i></h1>
+			<SearchBar searchKeyWords={searchKeyWords} />
+			<br></br>
+			<ImageList images={images.img} />
+		</div>
+	);
 }
 
 export default App;
